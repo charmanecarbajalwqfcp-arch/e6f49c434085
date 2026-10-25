@@ -1,0 +1,25 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/base:current
+    resource_class: medium
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y cmake g++
+      - run:
+          name: Build library
+          command: |
+            cmake -S . -B /tmp/eb -DARCH=x86-64 -DCMAKE_BUILD_TYPE=Release
+            cmake --build /tmp/eb --target lionss -j2
+            ls -la /tmp/eb/liblionss.a
+
+workflows:
+  main:
+    jobs:
+      - build
